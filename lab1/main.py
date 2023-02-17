@@ -59,6 +59,7 @@ if __name__ == '__main__':
             try:
                 n = int(input('Enter upper bound of array elements: \n'))
                 a = create_array(n)
+                
                 print(a)
             except ValueError:
                 print('[Error] Invalid upper bound. Stopping.')
