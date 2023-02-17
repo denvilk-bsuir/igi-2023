@@ -1,26 +1,34 @@
+from typing import List
 from constants import HELLO_WORLD
 from helpers import Operation
 
-def hello_world():
+
+def hello_world() -> None:
     print(HELLO_WORLD)
 
-def calculator(a: int, b: int, operation: Operation):
+
+def calculator(a: int, b: int, operation: Operation) -> None:
     match operation:
+
         case Operation.ADD:
             print(a+b)
+
         case Operation.SUB:
             print(a-b)
+
         case Operation.DIV:
             try:
                 print(a/b)
             except ZeroDivisionError:
                 print('[Error] Division by zero. Stopping.')
+
         case Operation.MULT:
             print(a*b)
 
 
-def create_array():
-    pass
+def create_array(n: int) -> List:
+    print('Generating array with even elements which don\'t exceed N')
+    return [x for x in range(0, n+1, 2)]
 
 
 if __name__ == '__main__':
@@ -28,22 +36,33 @@ if __name__ == '__main__':
     print('1) Hello world')
     print('2) Calculator')
     print('3) Create even array')
+
     cmd = int(input())
+
     match (cmd):
+
         case 1:
             hello_world()
         case 2:
-            a, b = map(int, input('Enter number A and B (in one line):\n').split())
-            operation_input = input('Enter operation (add, sub, mult, div):\n')
             try:
-                operation = Operation(operation_input)
-                calculator(a, b, operation)
+                a, b = map(int, input('Enter number A and B (in one line):\n').split())
+                operation_input = input('Enter operation (add, sub, mult, div):\n')
+
+                try:
+                    operation = Operation(operation_input)
+                    calculator(a, b, operation)
+                except ValueError:
+                    print('[Error] Invalid operation. Stopping.')
             except ValueError:
-                print('[Error] Invalid operation. Stopping')
-                
+                print('[Error] Invalid numbers. Stopping.')
         case 3:
-            create_array()
+            try:
+                n = int(input('Enter upper bound of array elements: \n'))
+                a = create_array(n)
+                print(a)
+            except ValueError:
+                print('[Error] Invalid upper bound. Stopping.')
         case _:
-            print("Invalid command. Stopping.")
+            print("[Error] Invalid command. Stopping.")
 
         
