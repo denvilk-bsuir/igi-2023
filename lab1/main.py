@@ -1,6 +1,6 @@
 from typing import List
 from constants import HELLO_WORLD
-from helpers import Operation
+from helpers import Operation, Command
 
 
 def hello_world() -> None:
@@ -26,9 +26,9 @@ def calculator(a: int, b: int, operation: Operation) -> None:
             print(a*b)
 
 
-def create_array(n: int) -> List:
+def create_array(l: List) -> List:
     print('Generating array with even elements which don\'t exceed N')
-    return [x for x in range(0, n+1, 2)]
+    return [x for x in l if x%2==0]
 
 
 if __name__ == '__main__':
@@ -37,13 +37,17 @@ if __name__ == '__main__':
     print('2) Calculator')
     print('3) Create even array')
 
-    cmd = int(input())
+    try:
+        cmd = int(input())
+        command = Command(cmd)
+    except ValueError:
+        print('[Error] Invalid command. Stopping.')
+        command = None
 
-    match (cmd):
-
-        case 1:
+    match (command):
+        case Command.HELLO_WORLD:
             hello_world()
-        case 2:
+        case Command.CALCULATOR:
             try:
                 a, b = map(int, input('Enter number A and B (in one line):\n').split())
                 operation_input = input('Enter operation (add, sub, mult, div):\n')
@@ -55,15 +59,13 @@ if __name__ == '__main__':
                     print('[Error] Invalid operation. Stopping.')
             except ValueError:
                 print('[Error] Invalid numbers. Stopping.')
-        case 3:
+        case Command.EVEN_ARRAY:
             try:
-                n = int(input('Enter upper bound of array elements: \n'))
-                a = create_array(n)
+                l = list(map(int, input("Enter array of integer numbers in one line:\n").split()))
+                a = create_array(l)
                 
                 print(a)
             except ValueError:
-                print('[Error] Invalid upper bound. Stopping.')
-        case _:
-            print("[Error] Invalid command. Stopping.")
+                print('[Error] Invalid numbers. Stopping.')
 
         
