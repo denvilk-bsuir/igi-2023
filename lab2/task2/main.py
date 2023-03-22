@@ -24,14 +24,12 @@ class Container:
         data:dict = {}
         self.username = username
         try:
-            with open("data.txt","r+") as f:
+            with open("data/data.txt","r+") as f:
                 data = json.load(f)
-                print(data)
         except FileNotFoundError:
-            os.system("touch data.txt && echo {} >> data.txt")
-            with open("data.txt","r+") as f:
+            os.system("touch data/data.txt && echo {} >> data.txt")
+            with open("data/data.txt","r+") as f:
                 data = json.load(f)
-                print(data)
             
         if not username in data:
             print("No such user in db, creating new.")
@@ -49,11 +47,11 @@ class Container:
             return
 
         data = None
-        with open("data.txt", "r+") as f:
+        with open("data/data.txt", "r+") as f:
             data = json.load(f)
         data[self.username] = list(self.current_state)
         print(data)
-        with open("data.txt", "w+") as f:
+        with open("data/data.txt", "w+") as f:
             json.dump(data, f)
 
         
