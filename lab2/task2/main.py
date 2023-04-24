@@ -3,6 +3,7 @@ import json
 import re
 from typing import Any, Set
 
+
 class Container:
     username: str
     current_state: Set[Any]
@@ -14,30 +15,31 @@ class Container:
 
     def load(self, username: str) -> None:
         if not self.saved:
-            ans = input("Your data is not saved. Do you want to continue? (y/N):")
-            if ans!='y':
+            ans = input(
+                "Your data is not saved. Do you want to concatinate you data with loaded data? (y/N):")
+            if ans != 'y':
                 print('Loading new data without saving.')
             else:
                 self.save()
 
         print("Loading data...")
-        data:dict = {}
+        data: dict = {}
         self.username = username
         try:
-            with open("data/data.txt","r+") as f:
+            with open("data/data.txt", "r+") as f:
                 data = json.load(f)
         except FileNotFoundError:
             os.system("touch data/data.txt && echo {} >> data.txt")
-            with open("data/data.txt","r+") as f:
+            with open("data/data.txt", "r+") as f:
                 data = json.load(f)
-            
+
         if not username in data:
             print("No such user in db, creating new.")
             self.current_state = set()
             self.save()
         else:
-            self.current_state = set(data.get(username, []))
-            self.saved = True
+            self.current_state.update(set(data.get(username, [])))
+            self.save()
 
         print("Loaded: ", *self.current_state)
 
@@ -54,7 +56,6 @@ class Container:
         with open("data/data.txt", "w+") as f:
             json.dump(data, f)
 
-        
         self.saved = True
         print("Saved!")
 
@@ -66,7 +67,7 @@ class Container:
         count = self.current_state.__len__()
         self.current_state.update(args)
         print(f"Has been added {len(self.current_state)-count} elements!")
-    
+
     def remove(self, *args) -> None:
         if self.saved:
             self.saved = False
@@ -86,7 +87,7 @@ class Container:
         for item in args:
             if item in self.current_state:
                 print(f"Found {item}.")
-                c+=1
+                c += 1
             else:
                 print(f"{item} not found.")
         if not c:
@@ -99,7 +100,7 @@ class Container:
         for item in self.current_state:
             if (res := re.match(regex, item)):
                 print(f"Matching pattern {item}")
-                c+=1
+                c += 1
         if not c:
             print("No items matched with regular expression")
         else:
@@ -113,8 +114,9 @@ class Container:
         if self.username == username:
             print("You have been already logged in as such user.")
             return
-        
+
         self.load(username)
+
 
 username = input("Enter username to load data: ")
 container = Container(username)
@@ -133,7 +135,7 @@ print("""Choose command:
         Choose:
     """)
 
-while (cmd := input())!="stop":
+while (cmd := input()) != "stop":
     os.system("clear")
     print("Results")
     print("-"*20)
@@ -149,13 +151,16 @@ while (cmd := input())!="stop":
             username = input("Enter username to load data: ")
             container.load(username)
         case "add":
-            elements = input("Enter element (or elements) to add to container(splitting by @): ")
+            elements = input(
+                "Enter element (or elements) to add to container(splitting by @): ")
             container.add(*(elements.split('@')))
         case "remove":
-            elements = input("Enter element (or elements) to remove to container(splitting by @): ")
+            elements = input(
+                "Enter element (or elements) to remove to container(splitting by @): ")
             container.remove(*(elements.split('@')))
         case "find":
-            elements = input("Enter element (or elements) to check existance in container(splitting by @): ")
+            elements = input(
+                "Enter element (or elements) to check existance in container(splitting by @): ")
             container.find(*(elements.split('@')))
         case "switch":
             username = input("Enter username to load data: ")
@@ -181,7 +186,7 @@ while (cmd := input())!="stop":
 
 if not container.saved:
     ans = input("Your data is not saved. Do you want to continue? (y/N):")
-    if ans!='y':
+    if ans != 'y':
         print('Loading new data without saving.')
     else:
         container.save()
