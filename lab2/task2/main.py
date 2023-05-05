@@ -10,21 +10,22 @@ class Container:
     saved: bool
 
     def __init__(self, username):
-        self.saved = True
-        self.load(username)
+        self.username = username
+        self.saved = False
+        self.current_state = set()
 
-    def load(self, username: str) -> None:
+    def load(self) -> None:
         if not self.saved:
             ans = input(
-                "Your data is not saved. Do you want to concatinate you data with loaded data? (y/N):")
-            if ans != 'y':
-                print('Loading new data without saving.')
+                "Your data is not saved. Do you want to concatinate you data with loaded data? (y/N):"
+            )
+            if ans == 'y':
+                print('Loading new data with saving.')
             else:
                 self.save()
 
         print("Loading data...")
         data: dict = {}
-        self.username = username
         try:
             with open("data/data.txt", "r+") as f:
                 data = json.load(f)
@@ -33,12 +34,13 @@ class Container:
             with open("data/data.txt", "r+") as f:
                 data = json.load(f)
 
-        if not username in data:
+        if not self.username in data:
             print("No such user in db, creating new.")
             self.current_state = set()
             self.save()
         else:
-            self.current_state.update(set(data.get(username, [])))
+            last_state = set(data.get(self.username, []))
+            self.current_state.update(last_state)
             self.save()
 
         print("Loaded: ", *self.current_state)
@@ -52,7 +54,6 @@ class Container:
         with open("data/data.txt", "r+") as f:
             data = json.load(f)
         data[self.username] = list(self.current_state)
-        print(data)
         with open("data/data.txt", "w+") as f:
             json.dump(data, f)
 
@@ -114,8 +115,7 @@ class Container:
         if self.username == username:
             print("You have been already logged in as such user.")
             return
-
-        self.load(username)
+        self.__init__(username)
 
 
 username = input("Enter username to load data: ")
@@ -148,8 +148,7 @@ while (cmd := input()) != "stop":
         case "save":
             container.save()
         case "load":
-            username = input("Enter username to load data: ")
-            container.load(username)
+            container.load()
         case "add":
             elements = input(
                 "Enter element (or elements) to add to container(splitting by @): ")

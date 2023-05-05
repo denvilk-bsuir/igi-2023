@@ -38,7 +38,7 @@ def get_top_n_grams(grams: Dict[str, int]) -> List[Tuple[str, int]]:
     return sorted_grams
 
 
-def count_stats(sentences: List[Tuple[str, str]], n: int = 4, k: int = 10) -> Dict[str, Any]:
+def count_stats(sentences: List[Tuple[str, str]], n: int = 3, k: int = 3) -> Dict[str, Any]:
     REG = WORDS
     top_n_grams = {}
     non_declarative = 0
